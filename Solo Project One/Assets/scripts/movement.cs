@@ -16,11 +16,9 @@ public class movement : MonoBehaviour
     {
         float forward = Input.GetAxisRaw("Vertical");
         float sidetoside = Input.GetAxisRaw("Horizontal");
-        transform.Translate(0, 0, forward / 90);
-        transform.Rotate(0, sidetoside / 5, 0);
-        print(sidetoside);
+        transform.Translate(0, 0, forward / 10);
+        transform.Rotate(0, sidetoside, 0);
         if (Input.GetKeyDown("space")) {
-            print("space");
             transform.Translate(0, 2, 0);
         } else {
             rb.constraints = RigidbodyConstraints.FreezeRotation;
