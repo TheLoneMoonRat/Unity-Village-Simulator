@@ -9,10 +9,11 @@ public class tracking : MonoBehaviour
     public Transform self;
     Vector3 currentDistance;
     Vector3 homePosition;
-    float initialSpeed;
-    Vector3 direction;
+    Vector3 initialSpeed;
+    public int basket = 0;
+    public int berries = 0;
     List <int> foods = new List<int>();
-    int place;
+    int place = 0;
     float closest;
     public Transform target = null;
     // Start is called before the first frame update
@@ -31,7 +32,6 @@ public class tracking : MonoBehaviour
     void Update()
     {
         closest = 1000;
-        place = 0;
         if (target == null) {
             for (int i=0; i< treegroup.childCount; i++) {
                 currentDistance = new Vector3(self.transform.position.x - treegroup.GetChild(i).transform.position.x, 0, self.transform.position.z - treegroup.GetChild(i).transform.position.z);
@@ -41,32 +41,39 @@ public class tracking : MonoBehaviour
                     place = i;
                 } 
             } 
-            moveFarmer();
+            initialSpeed = new Vector3((self.transform.position.x - target.position.x) / 100.0f, 0, (self.transform.position.z - target.position.z) / 100.0f);
+        } else {
+            print(getDistance(self.transform.position, target.transform.position));
+            if (getDistance(self.transform.position, target.transform.position) < 1) {
+                foods[place] -= 10;
+                basket+=10;
+                initialSpeed = new Vector3((self.transform.position.x - homePosition.x) / 100.0f, 0, (self.transform.position.z - homePosition.z) / 100.0f);
+            } else if (getDistance(self.transform.position, homePosition) < 1 && basket == 10) {
+                basket = 0;
+                berries += 10;
+                target = null;
+            
+            }else if (basket == 0) {
+                StartCoroutine(Path());
+            } else {
+                print('h');
+                initialSpeed = new Vector3((self.transform.position.x - homePosition.x) / 100.0f, 0, (self.transform.position.z - homePosition.z) / 100.0f);
+                StartCoroutine(Path());
+            }
         }
     }
     private float toFloat(double a) {
         return (float)a;
     }
 
-    private void moveFarmer () {
-        direction = new Vector3(target.transform.position.x, 0, target.transform.position.z);
-        initialSpeed = getDistance(self.transform.position, target.transform.position) / 15.0f; 
-        StartCoroutine(Path());
-    }
     public float getDistance (Vector3 a, Vector3 b) {
         Vector3 placeholder = new Vector3(a.x - b.x, 0, a.z - b.z);
         return(toFloat(Math.Sqrt(Math.Pow(placeholder.x, 2) + Math.Pow(placeholder.z, 2))));
     }
     IEnumerator Path()
     {
-        
-        
         yield return new WaitForSeconds(0.01f);
-        transform.Translate(0.01f, 0, 0);
-        if (getDistance(self.transform.position, target.transform.position) < 5) {
-            foods[place] -= 1;
-            StopCoroutine(Path());
-        }
+        transform.Translate(-initialSpeed.x, 0, -initialSpeed.z);
     }
     public Vector3 subtract (Vector3 subtractor, Vector3 subtractee) {
         return(new Vector3(subtractee.x - subtractor.x, 0, subtractee.z - subtractee.z));
