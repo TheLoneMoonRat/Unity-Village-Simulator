@@ -6,10 +6,12 @@ using System;
 public class tracking : MonoBehaviour
 {
     public Transform treegroup;
+    public Transform bowl;
+    public Transform barrel;
     public Transform self;
     Vector3 currentDistance;
     Vector3 homePosition;
-    public Script js;
+    public instantiator other; 
     Vector3 initialSpeed;
     public int basket = 0;
     public int berries = 0;
@@ -46,18 +48,29 @@ public class tracking : MonoBehaviour
             initialSpeed = new Vector3((self.transform.position.x - target.position.x) / movementSpeed, 0, (self.transform.position.z - target.position.z) / movementSpeed);
         } else {
             if (getDistance(self.transform.position, target.transform.position) < 1 && basket < 10) {
-                
+                other.spawnBerry(this.transform);
                 foods[place] -= 1;
                 basket++;
             } else if (getDistance(self.transform.position, homePosition) < 1 && basket > 0) {
+                other.deSpawnBerry(barrel.transform);
                 basket -= 1;
                 berries += 1;
             }else if (basket == 0) {
                 target = null;
                 StartCoroutine(Path());
             } else {
-                initialSpeed = new Vector3((self.transform.position.x - homePosition.x) / movementSpeed, 0, (self.transform.position.z - homePosition.z) / movementSpeed);
-                StartCoroutine(Path());
+                bool greenLight = true;
+                foreach (GameObject g in other.childrens) {
+                    if (g.transform.position.y > bowl.transform.position.y) {
+                        greenLight = false;
+                    } else {
+                        g.transform.parent = this.transform;
+                    }
+                }
+                if (greenLight == true) {
+                    initialSpeed = new Vector3((self.transform.position.x - homePosition.x) / movementSpeed, 0, (self.transform.position.z - homePosition.z) / movementSpeed);
+                    StartCoroutine(Path());
+                }
             }
         }
     }
