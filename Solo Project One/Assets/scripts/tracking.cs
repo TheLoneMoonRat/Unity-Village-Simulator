@@ -9,9 +9,11 @@ public class tracking : MonoBehaviour
     public Transform self;
     Vector3 currentDistance;
     Vector3 homePosition;
+    public Script js;
     Vector3 initialSpeed;
     public int basket = 0;
     public int berries = 0;
+    public float movementSpeed = 150.0f;
     List <int> foods = new List<int>();
     int place = 0;
     float closest;
@@ -31,7 +33,7 @@ public class tracking : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        closest = 1000;
+        closest = 100000;
         if (target == null) {
             for (int i=0; i< treegroup.childCount; i++) {
                 currentDistance = new Vector3(self.transform.position.x - treegroup.GetChild(i).transform.position.x, 0, self.transform.position.z - treegroup.GetChild(i).transform.position.z);
@@ -41,23 +43,20 @@ public class tracking : MonoBehaviour
                     place = i;
                 } 
             } 
-            initialSpeed = new Vector3((self.transform.position.x - target.position.x) / 100.0f, 0, (self.transform.position.z - target.position.z) / 100.0f);
+            initialSpeed = new Vector3((self.transform.position.x - target.position.x) / movementSpeed, 0, (self.transform.position.z - target.position.z) / movementSpeed);
         } else {
-            print(getDistance(self.transform.position, target.transform.position));
-            if (getDistance(self.transform.position, target.transform.position) < 1) {
-                foods[place] -= 10;
-                basket+=10;
-                initialSpeed = new Vector3((self.transform.position.x - homePosition.x) / 100.0f, 0, (self.transform.position.z - homePosition.z) / 100.0f);
-            } else if (getDistance(self.transform.position, homePosition) < 1 && basket == 10) {
-                basket = 0;
-                berries += 10;
-                target = null;
-            
+            if (getDistance(self.transform.position, target.transform.position) < 1 && basket < 10) {
+                
+                foods[place] -= 1;
+                basket++;
+            } else if (getDistance(self.transform.position, homePosition) < 1 && basket > 0) {
+                basket -= 1;
+                berries += 1;
             }else if (basket == 0) {
+                target = null;
                 StartCoroutine(Path());
             } else {
-                print('h');
-                initialSpeed = new Vector3((self.transform.position.x - homePosition.x) / 100.0f, 0, (self.transform.position.z - homePosition.z) / 100.0f);
+                initialSpeed = new Vector3((self.transform.position.x - homePosition.x) / movementSpeed, 0, (self.transform.position.z - homePosition.z) / movementSpeed);
                 StartCoroutine(Path());
             }
         }
