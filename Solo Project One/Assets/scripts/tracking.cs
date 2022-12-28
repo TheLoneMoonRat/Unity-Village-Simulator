@@ -78,7 +78,7 @@ public class tracking : MonoBehaviour
         return (float)a;
     }
 
-    public float getDistance (Vector3 a, Vector3 b) {
+    float getDistance (Vector3 a, Vector3 b) {
         Vector3 placeholder = new Vector3(a.x - b.x, 0, a.z - b.z);
         return(toFloat(Math.Sqrt(Math.Pow(placeholder.x, 2) + Math.Pow(placeholder.z, 2))));
     }
