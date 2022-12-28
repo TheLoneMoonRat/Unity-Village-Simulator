@@ -17,7 +17,7 @@ public class mining : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentSpeed = new Vector3(me.transform.position.x - tr.transform.position.x, 0, me.transform.position.z - tr.transform.position.z);
+        currentSpeed = new Vector3((me.transform.position.x - tr.transform.position.x) / 6000f, 0, (me.transform.position.z - tr.transform.position.z) / 6000f);
         gamer.SetActive(false);
     }
 
@@ -34,7 +34,7 @@ public class mining : MonoBehaviour
 
     IEnumerator toTheMines() {
         yield return new WaitForSeconds(0.01f);
-        transform.Translate(-currentSpeed.x / 2500.0f, 0, -currentSpeed.z / 2500.0f);
+        transform.Translate(-currentSpeed.x, 0, -currentSpeed.z);
     }
     IEnumerator mineNow() {
         yield return new WaitForSeconds(5f);
@@ -43,7 +43,7 @@ public class mining : MonoBehaviour
             childrens.Add(Instantiate(gamer, locationer, Quaternion.identity));
             childrens[childrens.Count - 1].SetActive(true);
             obthing = childrens[childrens.Count - 1].GetComponent<Rigidbody>();
-            obthing.AddForce(0, 5, 1f, ForceMode.Impulse);
+            obthing.AddForce(0, 5, 5f, ForceMode.Impulse);
         }
         i++;
     }
