@@ -30,7 +30,6 @@ public class blacksmithWalk : MonoBehaviour
             } 
             StartCoroutine(toTheForge());
         } else {
-            print("gaming");
         }
     }
 

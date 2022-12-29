@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Random=UnityEngine.Random;
 
 public class mining : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class mining : MonoBehaviour
     public Rigidbody obthing;
     public GameObject mee;
     public MeshRenderer dumb;
-    List<GameObject> childrens = new List <GameObject>();
+    public List<GameObject> childrens = new List <GameObject>();
     Vector3 currentSpeed;
     // Start is called before the first frame update
     void Start()
@@ -38,12 +39,13 @@ public class mining : MonoBehaviour
     }
     IEnumerator mineNow() {
         yield return new WaitForSeconds(5f);
-        if (i % 2000 ==0) {
+        if (i % 1500 ==0) {
             Vector3 locationer = new Vector3(me.transform.position.x, me.transform.position.y, me.transform.position.z);
             childrens.Add(Instantiate(gamer, locationer, Quaternion.identity));
             childrens[childrens.Count - 1].SetActive(true);
             obthing = childrens[childrens.Count - 1].GetComponent<Rigidbody>();
-            obthing.AddForce(0, 5, 5f, ForceMode.Impulse);
+            float randomChance = Random.Range(10f, 20f);
+            obthing.AddForce(0, randomChance, 1f, ForceMode.Impulse);
         }
         i++;
     }
